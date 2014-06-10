@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
 
   /* Launch QPU program and block till its done */
   t0 = timestamp_us();
-  unsigned r = execute_qpu(mb, GPU_QPUS, as_gpu_address(qpu_msg), 1, 10000);
+  unsigned r = execute_qpu(mb, GPU_QPUS, as_gpu_address(qpu_msg), 1, 1000);
   t1 = timestamp_us();
   printf("%d (%u microseconds)\n", r, t1-t0);
 

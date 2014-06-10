@@ -3,7 +3,7 @@
 
 #include "mailbox.h"
 
-#define GPU_QPUS 2
+#define GPU_QPUS 1
 
 #define GPU_MEM_FLG 0xC // cached=0xC; direct=0x4
 #define GPU_MEM_MAP 0x0 // cached=0x0; direct=0x20000000
@@ -23,6 +23,14 @@ unsigned int program[] = {
 int main(int argc, char *argv[]) {
   unsigned t0, t1;
   int mb = mbox_open();
+  unsigned uniform_value;
+
+  if (argc != 2) {
+    fprintf(stderr, "usage: %s <uniform value>\n", argv[0]);
+    return -1;
+  }
+
+  uniform_value = strtoul(argv[1], NULL, 0);
 
   /* Enable QPU for execution */
   int qpu_enabled = !qpu_enable(mb, 1);
@@ -73,7 +81,7 @@ int main(int argc, char *argv[]) {
   unsigned *qpu_uniform = p;
   int i;
   for (i = 0; i < GPU_QPUS; ++i) {
-    *p++ = 1;
+    *p++ = uniform_value + i;
     *p++ = (unsigned)(gpu_pointer+256+i*0x180);
   }
 
@@ -94,7 +102,7 @@ int main(int argc, char *argv[]) {
 
   /* Launch QPU program and block till its done */
   t0 = timestamp_us();
-  unsigned r = execute_qpu(mb, GPU_QPUS, as_gpu_address(qpu_msg), 1, 10000);
+  unsigned r = execute_qpu(mb, GPU_QPUS, as_gpu_address(qpu_msg), 1, 1000);
   t1 = timestamp_us();
   printf("qpu exec %08x returns %d (%u us)\n",
       gpu_pointer + ((void *)qpu_msg - arm_pointer), r, t1 - t0);
