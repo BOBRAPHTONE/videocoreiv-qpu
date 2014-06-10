@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IOCTL_MBOX_PROPERTY _IOWR(MAJOR_NUM, 0, char *)
 #define DEVICE_FILE_NAME "char_dev"
 
+unsigned timestamp_us(void);
 int mbox_open();
 void mbox_close(int file_desc);
 

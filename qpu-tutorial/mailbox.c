@@ -34,10 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#include <time.h>
 
 #include "mailbox.h"
 
 #define PAGE_SIZE (4*1024)
+
+unsigned timestamp_us(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return ts.tv_sec*1000000 + ts.tv_nsec/1000;
+}
 
 void *mapmem(unsigned base, unsigned size)
 {
