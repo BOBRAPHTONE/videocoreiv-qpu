@@ -13,14 +13,16 @@ entry:
 	ldi vw_setup, vw_layout(1, 1)
 
 	# Write 5x16 words into vpm
-	mov vpm, 1
-	mov vpm, 2
-	mov vpm, 4
-	mov vpm, 8
+	mov vpm, qpu_num
+	mov vpm, elem_num
+	mov vpm, elem_num
+	mov vpm, elem_num
 	mov vpm, elem_num
 
-	# Configure vpm write to memory
+	# VPM DMA Store (VDW) basic setup
 	ldi vw_setup, vw_setup0(5, 16)
+
+	# VPM DMA Store stride setup
 	ldi vw_setup, vw_setup1(0, 0)
 
 	# Trigger transfer to destination in memory (address is from uniforms)

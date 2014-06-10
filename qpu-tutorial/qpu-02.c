@@ -3,7 +3,7 @@
 
 #include "mailbox.h"
 
-#define GPU_QPUS 1
+#define GPU_QPUS 2
 
 #define GPU_MEM_FLG 0xC // cached=0xC; direct=0x4
 #define GPU_MEM_MAP 0x0 // cached=0x0; direct=0x20000000
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
   int i;
   for (i = 0; i < GPU_QPUS; ++i) {
     *p++ = 1;
-    *p++ = (unsigned)(gpu_pointer+2048+i*16*6*4);
+    *p++ = (unsigned)(gpu_pointer+256+i*0x180);
   }
 
   /* Build QPU Launch messages */
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
   // Test buffer
   printf("before:");
-  for (i=0; i<size/4; i++) {
+  for (i=0; i<size/4/4; i++) {
     if ((i%8)==0) printf("\n%08x:", gpu_pointer+i*4);
     printf(" %08x", ((unsigned *)arm_pointer)[i]);
   }
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
 
   // Test buffer
   printf("after:");
-  for (i=0; i<size/4; i++) {
+  for (i=0; i<size/4/4; i++) {
     if ((i%8)==0) printf("\n%08x:", gpu_pointer+i*4);
     printf(" %08x", ((unsigned *)arm_pointer)[i]);
   }
