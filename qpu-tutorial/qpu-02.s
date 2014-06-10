@@ -6,21 +6,18 @@
 .global exit
 
 entry:
-	# Determine if this QPU will signal on completion (flag is from uniforms)
-	mov rb3, unif
+
+	mov r1, unif
 
 	# Configure access to vpm
 	ldi vw_setup, vw_layout(1, 1)
 
-	# Write 5x16 words into vpm
-	mov vpm, qpu_num
+	# Write into VPM (auto-incrementing)
 	mov vpm, elem_num
-	mov vpm, elem_num
-	mov vpm, elem_num
-	mov vpm, elem_num
+	mov vpm, r1
 
 	# VPM DMA Store (VDW) basic setup
-	ldi vw_setup, vw_setup0(5, 16)
+	ldi vw_setup, vw_setup0(2, 16)
 
 	# VPM DMA Store stride setup
 	ldi vw_setup, vw_setup1(0, 0)
@@ -33,7 +30,7 @@ entry:
 
 exit:
 	# Signal done
-	mov irq, rb3
+	mov irq, 1
 	nop; nop; thrend
 	nop
 	nop
